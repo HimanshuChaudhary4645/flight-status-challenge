@@ -6,33 +6,55 @@ namespace FlightStatus.Api.Services;
 public class FlightStatusService : IFlightStatusService
 {
     private readonly IEnumerable<IFlightStatusProvider> _providers;
+    private readonly ILogger<FlightStatusService> _logger;
 
     public FlightStatusService(
-        IEnumerable<IFlightStatusProvider> providers)
+        IEnumerable<IFlightStatusProvider> providers,
+        ILogger<FlightStatusService> logger)
     {
         _providers = providers;
+        _logger = logger;
     }
 
     public async Task<FlightStatusResult> GetStatusAsync(
         string flightNumber,
         DateTime date)
     {
+        _logger.LogInformation(
+            "Looking up flight {FlightNumber} for {Date}",
+            flightNumber,
+            date);
+
         var results = new List<ProviderFlightStatus>();
 
         foreach (var provider in _providers)
         {
-            var response = await provider.GetStatusAsync(
-                flightNumber,
-                date);
-
-            if (response != null)
+            try
             {
-                results.Add(response);
+                var response = await provider.GetStatusAsync(
+                    flightNumber,
+                    date);
+
+                if (response != null)
+                {
+                    results.Add(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Provider failed while processing flight {FlightNumber}",
+                    flightNumber);
             }
         }
 
         if (!results.Any())
         {
+            _logger.LogWarning(
+                "No provider returned data for flight {FlightNumber}",
+                flightNumber);
+
             return new FlightStatusResult
             {
                 FlightNumber = flightNumber,
@@ -45,6 +67,11 @@ public class FlightStatusService : IFlightStatusService
         var selectedResult = results
             .OrderByDescending(x => x.LastUpdatedUtc)
             .First();
+
+        _logger.LogInformation(
+            "Selected provider {ProviderName} for flight {FlightNumber}",
+            selectedResult.ProviderName,
+            flightNumber);
 
         return new FlightStatusResult
         {

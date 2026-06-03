@@ -5,9 +5,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IFlightStatusProvider, AeroTrackProvider>();
 builder.Services.AddScoped<IFlightStatusProvider, QuickFlightProvider>();
-
 builder.Services.AddScoped<IFlightStatusService, FlightStatusService>();
 
 var app = builder.Build();
+
+app.MapGet(
+    "/flights/status",
+    async (
+        string flightNumber,
+        DateTime date,
+        IFlightStatusService service) =>
+    {
+        if (string.IsNullOrWhiteSpace(flightNumber))
+        {
+            return Results.BadRequest(
+                "Flight number is required.");
+        }
+
+        var result = await service.GetStatusAsync(
+            flightNumber,
+            date);
+
+        return Results.Ok(result);
+    });
 
 app.Run();

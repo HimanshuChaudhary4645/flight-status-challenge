@@ -8,6 +8,43 @@ A support agent can search for a flight by flight number and date. The applicati
 
 ---
 
+## Technologies Used
+
+### Backend
+
+- .NET 8
+- ASP.NET Core Minimal API
+- xUnit
+
+### Frontend
+
+- Angular
+- TypeScript
+- Angular HttpClient
+
+---
+
+## Solution Structure
+```
+FlightStatusChallenge
+│
+├── FlightStatus.Api
+│   ASP.NET Core Minimal API
+│
+├── FlightStatus.Tests
+│   Unit Tests
+│
+├── flight-status-ui
+│   Angular Frontend
+│
+├── spec.md
+├── prompts.md
+├── reflection.md
+└── README.md
+```
+
+---
+
 ## Assumptions
 
 1. Providers are stubbed and deterministic.
@@ -24,6 +61,8 @@ A support agent can search for a flight by flight number and date. The applicati
 
 * FlightStatus.Api
 * FlightStatus.Tests
+* flight-status-ui
+
 
 ### Providers
 
@@ -90,6 +129,32 @@ Open:
 
 ```text
 http://localhost:5249/swagger
+```
+---
+
+## Frontend Application
+
+The Angular frontend allows users to:
+
+* Search by flight number and date
+* View the latest flight status
+* See provider information and flight details
+* Receive validation and error feedback
+
+### Run Frontend
+
+```bash
+cd flight-status-ui
+
+npm install
+
+ng serve
+```
+
+Open:
+
+```text
+http://localhost:4200
 ```
 
 ---

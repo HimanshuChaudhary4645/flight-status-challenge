@@ -24,16 +24,35 @@ export class App {
 
   errorMessage = '';
 
+  isLoading = false;
+
   constructor(
     private flightStatusService: FlightStatusService,
-     private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
   }
 
   search(): void {
 
+    if (!this.flightNumber.trim()) {
+
+      this.errorMessage =
+        'Flight number is required.';
+
+      return;
+    }
+
+    if (!this.date) {
+
+      this.errorMessage =
+        'Flight date is required.';
+
+      return;
+    }
+
     this.errorMessage = '';
     this.result = undefined;
+    this.isLoading = true;
 
     this.flightStatusService
       .getFlightStatus(
@@ -42,26 +61,41 @@ export class App {
       .subscribe({
         next: (response) => {
 
-          console.log('API Response', response);
-
           this.result = response;
+
           this.cdr.detectChanges();
 
-          console.log('Result Assigned', this.result);
-
+          this.isLoading = false;
         },
-        error: (err) => {
-
-          console.error(err);
+        error: () => {
 
           this.errorMessage =
             'Unable to retrieve flight status.';
+
+          this.isLoading = false;
         }
       });
   }
 
-  getType(value: any): string {
-    return typeof value;
+  getStatusText(status: number): string {
+
+    switch (status) {
+
+      case 0:
+        return 'On Time';
+
+      case 1:
+        return 'Delayed';
+
+      case 2:
+        return 'Cancelled';
+
+      case 3:
+        return 'Diverted';
+
+      default:
+        return 'Unknown';
+    }
   }
 
   getStatusClass(status: number): string {

@@ -13,13 +13,27 @@
       type="date"
       [(ngModel)]="date">
 
-    <button (click)="search()">
-      Search
+    <button
+      (click)="search()"
+      [disabled]="isLoading">
+
+      {{ isLoading ? 'Searching...' : 'Search' }}
+
     </button>
 
   </div>
 
-  <div *ngIf="result" class="result-card">
+  <div
+    *ngIf="errorMessage"
+    class="error-box">
+
+    {{ errorMessage }}
+
+  </div>
+
+  <div
+    *ngIf="result"
+    class="result-card">
 
     <h2>{{ result.flightNumber }}</h2>
 
@@ -27,26 +41,23 @@
       class="status"
       [ngClass]="getStatusClass(result.status)">
 
-      <span *ngIf="result.status === 0">On Time</span>
-      <span *ngIf="result.status === 1">Delayed</span>
-      <span *ngIf="result.status === 2">Cancelled</span>
-      <span *ngIf="result.status === 3">Diverted</span>
+      {{ getStatusText(result.status) }}
 
     </div>
 
     <p>
       <strong>Scheduled Departure:</strong>
-      {{ result.scheduledDepartureUtc }}
+      {{ result.scheduledDepartureUtc | date:'dd MMM yyyy, hh:mm a' }}
     </p>
 
     <p>
       <strong>Scheduled Arrival:</strong>
-      {{ result.scheduledArrivalUtc }}
+      {{ result.scheduledArrivalUtc | date:'dd MMM yyyy, hh:mm a' }}
     </p>
 
     <p *ngIf="result.actualDepartureUtc">
       <strong>Actual Departure:</strong>
-      {{ result.actualDepartureUtc }}
+      {{ result.actualDepartureUtc | date:'dd MMM yyyy, hh:mm a' }}
     </p>
 
     <p *ngIf="result.terminal">

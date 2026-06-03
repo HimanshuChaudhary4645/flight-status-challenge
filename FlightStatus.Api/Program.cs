@@ -1,6 +1,13 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using FlightStatus.Api.Providers;
+using FlightStatus.Api.Services;
 
-app.MapGet("/", () => "Hello World!");
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IFlightStatusProvider, AeroTrackProvider>();
+builder.Services.AddScoped<IFlightStatusProvider, QuickFlightProvider>();
+
+builder.Services.AddScoped<IFlightStatusService, FlightStatusService>();
+
+var app = builder.Build();
 
 app.Run();

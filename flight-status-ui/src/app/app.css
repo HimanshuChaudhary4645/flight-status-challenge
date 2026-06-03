@@ -1,0 +1,49 @@
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  font-family: Arial, sans-serif;
+}
+
+.search-panel {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input,
+button {
+  padding: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.result-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.status {
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.on-time {
+  background: green;
+}
+
+.delayed {
+  background: orange;
+}
+
+.danger {
+  background: red;
+}
+
+.unknown {
+  background: gray;
+}
